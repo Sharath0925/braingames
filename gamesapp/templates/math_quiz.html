@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center">
+  <h2>🧮 Math Quiz</h2>
+  <p>Solve the math problems as fast as you can! You have 5 questions.</p>
+  
+  <div id="quizArea">
+    <p id="question"></p>
+    <input type="number" id="answer" autocomplete="off" />
+    <button class="btn btn-primary" onclick="submitAnswer()">Submit</button>
+  </div>
+
+  <p id="message"></p>
+</div>
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* prevent page scrolling */
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: -1;
+  }
+  .container {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 25px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    max-width: 420px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    color: white;
+  }
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+  }
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+  }
+  #quizArea {
+    margin: 20px auto;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  #question {
+    font-size: 1.5rem;
+    font-weight: 600;
+    min-height: 40px;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+  }
+  #answer {
+    width: 120px;
+    padding: 8px 10px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0,123,255,0.5);
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+  }
+  #answer:focus {
+    box-shadow: 0 6px 18px rgba(0,123,255,0.8);
+  }
+  button.btn-primary {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    padding: 10px 25px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,105,217,0.7);
+    transition: background-color 0.3s ease;
+    width: 100%;
+    cursor: pointer;
+  }
+  button.btn-primary:hover:not(:disabled) {
+    background-color: #004a99;
+    border-color: #003d7a;
+    box-shadow: 0 6px 20px rgba(0,74,153,0.9);
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  #message {
+    margin-top: 15px;
+    min-height: 1.5em;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+  }
+</style>
+
+<script>
+let correctAnswer;
+let questionCount = 0;
+let correctCount = 0;
+const maxQuestions = 5;
+
+function generateQuestion() {
+  const num1 = Math.floor(Math.random() * 20) + 1;
+  const num2 = Math.floor(Math.random() * 20) + 1;
+  const ops = ['+', '-', '*'];
+  const op = ops[Math.floor(Math.random() * ops.length)];
+
+  let questionText = `${num1} ${op} ${num2} = ?`;
+
+  switch(op) {
+    case '+': correctAnswer = num1 + num2; break;
+    case '-': correctAnswer = num1 - num2; break;
+    case '*': correctAnswer = num1 * num2; break;
+  }
+
+  document.getElementById('question').textContent = questionText;
+  document.getElementById('answer').value = '';
+  document.getElementById('message').textContent = `Question ${questionCount + 1} of ${maxQuestions}`;
+  document.getElementById('answer').disabled = false;
+  document.querySelector('#quizArea button').disabled = false;
+  document.getElementById('answer').focus();
+}
+
+function submitAnswer() {
+  const userAnswer = Number(document.getElementById('answer').value);
+  if (isNaN(userAnswer)) {
+    document.getElementById('message').textContent = 'Please enter a valid number!';
+    return;
+  }
+
+  if (userAnswer === correctAnswer) {
+    correctCount++;
+    document.getElementById('message').textContent = `Correct!`;
+  } else {
+    document.getElementById('message').textContent = `Wrong answer! The correct answer was ${correctAnswer}.`;
+  }
+
+  questionCount++;
+
+  if (questionCount === maxQuestions) {
+    const scoreData = {
+      game: "Math Quiz",
+      score: correctCount
+    };
+    localStorage.setItem('pending_score', JSON.stringify(scoreData));
+
+    const userConfirmed = confirm("Quiz finished! Please login to view your scores.");
+
+    if (userConfirmed) {
+      window.location.href = "/signup/";
+    } else {
+      document.getElementById('message').textContent = 'You can try again or login anytime.';
+      document.getElementById('answer').disabled = true;
+      document.querySelector('#quizArea button').disabled = true;
+    }
+  } else {
+    setTimeout(() => {
+      generateQuestion();
+    }, 1500);
+  }
+}
+
+window.onload = generateQuestion;
+</script>
+{% endblock %}

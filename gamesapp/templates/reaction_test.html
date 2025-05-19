@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center">
+  <h2>⚡ Reaction Time Test</h2>
+  <p>Wait for the box to turn green, then click as fast as you can!</p>
+  <button class="btn btn-primary" onclick="startTest()">Start</button>
+
+  <div id="testBox" onclick="boxClicked()"></div>
+  <p id="message"></p>
+</div>
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* prevent scrolling on whole page */
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: -1;
+  }
+  .container {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 20px 25px; /* reduced padding slightly */
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    max-width: 420px;
+    width: 100%;
+    /* Removed max-height and overflow-y to prevent internal scrolling */
+    box-sizing: border-box;
+    color: white;
+  }
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+  }
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+  }
+  button.btn-primary {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    padding: 10px 25px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,105,217,0.7);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  button.btn-primary:hover {
+    background-color: #004a99;
+    border-color: #003d7a;
+    box-shadow: 0 6px 20px rgba(0,74,153,0.9);
+  }
+  #testBox {
+    width: 300px;
+    height: 300px;
+    background-color: #007bff;
+    margin: 0 auto 20px auto;
+    border-radius: 10px;
+    display: none;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0,123,255,0.6);
+    transition: background-color 0.3s ease;
+  }
+  #message {
+    min-height: 1.5em;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+  }
+</style>
+
+<script>
+let startTime, timeout;
+
+function startTest() {
+  const box = document.getElementById("testBox");
+  box.style.backgroundColor = "#007bff";
+  box.style.display = "block";
+  box.onclick = tooSoon;
+  document.getElementById("message").textContent = "Wait for green...";
+
+  const delay = Math.random() * 3000 + 2000;
+  timeout = setTimeout(() => {
+    startTime = Date.now();
+    box.style.backgroundColor = "#28a745";
+    box.onclick = boxClicked;
+    document.getElementById("message").textContent = "Click now!";
+  }, delay);
+}
+
+function tooSoon() {
+  clearTimeout(timeout);
+  document.getElementById("message").textContent = "Too soon! Try again.";
+  document.getElementById("testBox").style.display = "none";
+}
+
+function boxClicked() {
+  const reaction = Date.now() - startTime;
+  document.getElementById("testBox").style.display = "none";
+  document.getElementById("message").textContent = `Your Reaction Time: ${reaction} ms`;
+
+  const scoreData = {
+    game: "Reaction Test",
+    score: reaction
+  };
+
+  localStorage.setItem('pending_score', JSON.stringify(scoreData));
+
+  const confirmed = confirm("Game finished! Please login to view your score.");
+
+  if (confirmed) {
+    window.location.href = "/signup/";
+  } else {
+    document.getElementById("message").textContent += " You can login anytime to save your score.";
+  }
+}
+</script>
+{% endblock %}
