@@ -8,11 +8,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_exempt
-
-# MongoDB setup
-client = MongoClient("mongodb://localhost:27017/")
-db = client["brain_games_db"]
-scores_collection = db["scores"]
+import bcrypt  # Add this at the top
 
 # -------------------------------
 # Public Views
@@ -31,22 +27,48 @@ def memory_game_view(request):
     return render(request, 'memory_game.html')
 
 # -------------------------------
+# MongoDB setup
+# -------------------------------
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["brain_games_db"]
+scores_collection = db["scores"]
+users_collection = db["users"]  # Collection to store extra user data
+
+# -------------------------------
 # Authentication
 # -------------------------------
 
+
+
 def signup_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username').strip()
-        password = request.POST.get('password').strip()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
 
-        if not username or not password:
-            return render(request, 'signup.html', {'error': 'Username and password required'})
+        if not username or not password or not email or not phone:
+            return render(request, 'signup.html', {'error': 'All fields are required'})
 
         if User.objects.filter(username=username).exists():
             return render(request, 'signup.html', {'error': 'Username already taken'})
 
-        user = User.objects.create_user(username=username, password=password)
+        # Create Django user (Django hashes password internally)
+        user = User.objects.create_user(username=username, password=password, email=email)
         user.save()
+
+        # Hash password for MongoDB
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+        # Save extra info in MongoDB
+        users_collection.insert_one({
+            'username': username,
+            'email': email,
+            'phone': phone,
+            'password': hashed_password  # hashed version
+        })
+
         messages.success(request, 'Signup successful. Please log in.')
         return redirect('login')
 
@@ -60,13 +82,10 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             return redirect('check_pending_score')
-
     else:
         form = AuthenticationForm()
 
     return render(request, 'login.html', {'form': form, 'next': request.GET.get('next', '')})
-
-
 
 def logout_view(request):
     logout(request)
