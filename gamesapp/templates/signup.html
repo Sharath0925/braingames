@@ -1,107 +1,41 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="container" style="max-width: 500px; padding: 30px 25px; box-sizing: border-box;">
-    <h2 class="mb-4">Sign Up</h2>
-    {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-    <form method="post" action="{% url 'signup' %}">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" id="username" name="username" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" id="password" name="password" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input type="text" id="phone" name="phone" class="form-control" required>
-        </div>
-        <input type="hidden" name="next" value="{{ next }}">
-        <button type="submit" class="btn btn-success w-100">Sign Up</button>
-    </form>
-    <p class="mt-3 text-center text-white">
-        Already have an account? <a class="text-info" href="{% url 'login' %}?next={{ next }}">Login here</a>
-    </p>
-</div>
+{% extends 'base.html' %}
+{% load static %}
 
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-  }
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: -1;
-  }
-  .container {
-    color: white;
-  }
-  h2 {
-    font-weight: 700;
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
-  }
-  label, input {
-    color: white;
-  }
-  input.form-control {
-    background-color: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-  input.form-control:hover {
-    background-color: rgba(255,255,255,0.25);
-    border-color: #66b2ff;
-  }
-  input.form-control:focus {
-    background-color: rgba(255,255,255,0.2);
-    border-color: #80bdff;
-    color: white;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-  }
-  .alert-danger {
-    background-color: rgba(255, 0, 0, 0.7);
-    border: none;
-    color: white;
-  }
-  a.text-info {
-    color: #66b2ff;
-    text-decoration: underline;
-  }
-  a.text-info:hover {
-    color: #3399ff;
-  }
-  button.btn-success {
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(40,167,69,0.7);
-    transition: background-color 0.3s ease;
-  }
-  button.btn-success:hover {
-    background-color: #218838;
-    box-shadow: 0 6px 20px rgba(33,136,56,0.9);
-  }
-</style>
+{% block content %}
+<!-- Link external signup CSS -->
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+
+<div class="container mt-5">
+  <h2>Sign Up</h2>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" id="username" name="username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone</label>
+      <input type="text" id="phone" name="phone" class="form-control" required>
+    </div>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+  </form>
+
+  <p class="mt-3 text-center text-white">
+    Already have an account? <a class="text-info" href="{% url 'login' %}?next={{ next }}">Login here</a>
+  </p>
+</div>
 {% endblock %}

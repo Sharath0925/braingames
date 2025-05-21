@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/view_scores.css' %}">
+
 <div class="main-container">
   <h3>Hello, {{ user.username }}! Your Game Scores:</h3>
 
@@ -22,61 +26,4 @@
     </tbody>
   </table>
 </div>
-
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    overflow-y: auto;
-  }
-
-  .main-container {
-    max-width: 850px;
-    margin: 60px auto;
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  }
-
-  h3 {
-    text-align: center;
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 30px;
-  }
-
-  .score-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 1rem;
-  }
-
-  .score-table thead th {
-    background-color: #007bff;
-    color: white;
-    padding: 14px;
-    text-align: left;
-  }
-
-  .score-table tbody td {
-    padding: 14px;
-    border-bottom: 1px solid #ccc;
-    color: #333;
-  }
-
-  .score-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
-  }
-
-  .score-table tbody tr:hover {
-    background-color: #e2e6ea;
-  }
-</style>
 {% endblock %}

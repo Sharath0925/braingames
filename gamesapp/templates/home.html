@@ -1,47 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<style>
-  body {
-    margin: 0;
-    padding: 40px 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: -1;
-  }
-  .game-container {
-    width: 100%;
-    max-width: 700px;
-    padding: 0 15px;
-    margin-left:20%;
-    margin-top:5%;
-  }
-</style>
+<!-- Link external CSS -->
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
 <div class="game-container">
-  <h2 class="text-center text-white mb-5 " style="font-size: 3rem; font-weight: 700;">Choose a Game</h2>
+  <h2 class="text-center text-white mb-5">Choose a Game</h2>
 
   <div class="d-flex flex-column gap-4 align-items-center">
     <a href="/memory/" class="text-decoration-none w-100">
       <div class="card h-100 shadow-lg d-flex align-items-center justify-content-center text-white"
            style="height: 250px; border-radius: 15px;
                   background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                                    url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80') !important;
+                  url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80') !important;
                   background-size: cover; background-position: center;">
-        <h2 style="font-size: 3rem; font-weight: 700;">Memory Game</h2>
+        <h2>Memory Game</h2>
       </div>
     </a>
 
@@ -49,10 +23,9 @@
       <div class="card h-100 shadow-lg d-flex align-items-center justify-content-center text-white"
            style="height: 250px; border-radius: 15px;
                  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                  url('https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?auto=format&fit=crop&w=800&q=80') !important;
-
-                  background-size: cover; background-position: center;">
-        <h2 style="font-size: 3rem; font-weight: 700;">Math Quiz</h2>
+                 url('https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?auto=format&fit=crop&w=800&q=80') !important;
+                 background-size: cover; background-position: center;">
+        <h2>Math Quiz</h2>
       </div>
     </a>
 
@@ -60,12 +33,11 @@
       <div class="card h-100 shadow-lg d-flex align-items-center justify-content-center text-white"
            style="height: 250px; border-radius: 15px;
                   background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                                    url('https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80') !important;
+                  url('https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80') !important;
                   background-size: cover; background-position: center;">
-        <h2 style="font-size: 3rem; font-weight: 700;">Reaction Test</h2>
+        <h2>Reaction Test</h2>
       </div>
     </a>
   </div>
 </div>
-
 {% endblock %}
