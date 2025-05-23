@@ -20,12 +20,12 @@ load_dotenv()
 import urllib.parse
 from pymongo import MongoClient
 
-username = urllib.parse.quote_plus("Sharathreddy")
-password = urllib.parse.quote_plus("Sharath@12345")  # encode the password safely
+username = urllib.parse.quote_plus("guptarohitcct")
+password = urllib.parse.quote_plus("szFpQVpWOu8ZESK")  # encode the password safely
 
-MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.bz0bvc4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.bz0bvc4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
-client = MongoClient(MONGO_URI)
+client = MongoClient('mongodb+srv://guptarohitcct:szFpQVpWOu8ZESKL@cluster0.hcxqrk6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client["brain_games_db"]
 scores_collection = db["scores"]
 users_collection = db["users"] 
