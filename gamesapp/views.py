@@ -4,11 +4,33 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from pymongo import MongoClient
+
 from datetime import datetime
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_exempt
-import bcrypt  # Add this at the top
+import bcrypt
+import os
+from urllib.parse import quote_plus
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Either use MONGO_URI directly (recommended) or username/password separately
+import urllib.parse
+from pymongo import MongoClient
+
+username = urllib.parse.quote_plus("Sharathreddy")
+password = urllib.parse.quote_plus("Sharath@12345")  # encode the password safely
+
+MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.bz0bvc4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+client = MongoClient(MONGO_URI)
+db = client["brain_games_db"]
+scores_collection = db["scores"]
+users_collection = db["users"] 
+
+ # Collection to store extra user data
 
 # -------------------------------
 # Public Views
@@ -27,19 +49,8 @@ def memory_game_view(request):
     return render(request, 'memory_game.html')
 
 # -------------------------------
-# MongoDB setup
+# Authentication Views
 # -------------------------------
-
-client = MongoClient("mongodb://localhost:27017/")
-db = client["brain_games_db"]
-scores_collection = db["scores"]
-users_collection = db["users"]  # Collection to store extra user data
-
-# -------------------------------
-# Authentication
-# -------------------------------
-
-
 
 def signup_view(request):
     if request.method == 'POST':
@@ -54,7 +65,7 @@ def signup_view(request):
         if User.objects.filter(username=username).exists():
             return render(request, 'signup.html', {'error': 'Username already taken'})
 
-        # Create Django user (Django hashes password internally)
+        # Create Django user
         user = User.objects.create_user(username=username, password=password, email=email)
         user.save()
 
@@ -66,7 +77,7 @@ def signup_view(request):
             'username': username,
             'email': email,
             'phone': phone,
-            'password': hashed_password  # hashed version
+            'password': hashed_password
         })
 
         messages.success(request, 'Signup successful. Please log in.')
